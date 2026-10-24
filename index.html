@@ -10,25 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
-                            800: '#0c4a6e',
-                            900: '#0f172a'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased flex flex-col min-h-screen">
 
@@ -43,11 +24,11 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <span id="syncStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                     <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-                    Realtime Active
+                    Sistem Aktif
                 </span>
-                <button onclick="openModal()" class="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-1.5">
+                <button onclick="openModalForAdd()" class="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-plus text-xs"></i> Tambah Data
                 </button>
             </div>
@@ -57,18 +38,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col md:flex-row gap-6">
 
         <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 flex-shrink-0 space-y-1">
+        <aside class="w-full md:w-64 flex-shrink-0 space-y-4">
             <nav class="bg-white p-2 rounded-xl shadow-sm border border-slate-200/80 space-y-1">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-sky-600 bg-sky-50 font-semibold transition">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg text-sky-600 bg-sky-50 transition">
                     <i class="fa-solid fa-chart-pie w-5"></i> Dashboard KPI
                 </button>
-                <button onclick="switchTab('stripping')" id="nav-stripping" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                <button onclick="switchTab('stripping')" id="nav-stripping" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 transition">
                     <i class="fa-solid fa-box-open w-5"></i> Stripping (Bongkaran)
                 </button>
-                <button onclick="switchTab('stuffing')" id="nav-stuffing" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                <button onclick="switchTab('stuffing')" id="nav-stuffing" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 transition">
                     <i class="fa-solid fa-boxes-packing w-5"></i> Stuffing (Muatan)
                 </button>
-                <button onclick="switchTab('vessel')" id="nav-vessel" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                <button onclick="switchTab('vessel')" id="nav-vessel" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 transition">
                     <i class="fa-solid fa-anchor w-5"></i> Vessel Departure
                 </button>
             </nav>
@@ -77,9 +58,7 @@
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/80 space-y-3">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-magnifying-glass"></i> Cek Kontainer Cepat</h3>
                 <input type="text" id="quickSearchInput" oninput="quickSearch()" placeholder="Ketik No Kontainer..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 uppercase">
-                <div id="quickSearchResult" class="text-xs text-slate-500 hidden bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                    <!-- Result inserted dynamically -->
-                </div>
+                <div id="quickSearchResult" class="text-xs text-slate-600 hidden bg-slate-50 p-3 rounded-lg border border-slate-200"></div>
             </div>
         </aside>
 
@@ -120,45 +99,23 @@
                 <!-- Charts Row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80">
-                        <h3 class="text-sm font-semibold text-slate-700 mb-4 flex items-center justify-between">
-                            Aktivitas Sopir (Dalam vs Luar)
-                        </h3>
-                        <div class="h-64">
+                        <h3 class="text-sm font-semibold text-slate-700 mb-4">Aktivitas Sopir (Dalam vs Luar)</h3>
+                        <div class="h-64 relative">
                             <canvas id="driverChart"></canvas>
                         </div>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200/80">
                         <h3 class="text-sm font-semibold text-slate-700 mb-4">Distribusi Ukuran Kontainer</h3>
-                        <div class="h-64 flex justify-center">
+                        <div class="h-64 relative flex justify-center">
                             <canvas id="sizeChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activities Table -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <h3 class="text-sm font-semibold text-slate-700">Aktivitas Terakhir</h3>
-                        <button onclick="exportCSV('dashboard')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-md transition flex items-center gap-1">
-                            <i class="fa-solid fa-file-csv"></i> Export CSV
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-medium border-b border-slate-200">
-                                    <th class="p-3">No Container</th>
-                                    <th class="p-3">Kategori</th>
-                                    <th class="p-3">Kapal</th>
-                                    <th class="p-3">Consignee</th>
-                                    <th class="p-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashTableBody" class="divide-y divide-slate-100 text-slate-700">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Summary Info -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/80">
+                    <h3 class="text-sm font-semibold text-slate-700 mb-2"><i class="fa-solid fa-circle-info text-sky-500 mr-1"></i> Panduan Edit Data</h3>
+                    <p class="text-xs text-slate-600">Untuk mengedit atau menghapus data kontainer secara langsung, silakan buka menu tab <b>Stripping (Bongkaran)</b> atau <b>Stuffing (Muatan)</b> di menu sebelah kiri, lalu klik tombol <b><i class="fa-solid fa-pen-to-square"></i> Edit</b> pada baris yang diinginkan.</p>
                 </div>
             </div>
 
@@ -167,8 +124,8 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
                     <h2 class="text-base font-semibold text-slate-800">Daftar Stripping (Bongkaran)</h2>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <input type="text" id="searchStripping" oninput="renderStripping()" placeholder="Cari bongkaran..." class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-64">
-                        <button onclick="exportCSV('stripping')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap">Export</button>
+                        <input type="text" id="searchStripping" oninput="renderStripping()" placeholder="Cari kontainer/kapal..." class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-64">
+                        <button onclick="openModalForAdd('BONGKARAN')" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap">+ Tambah</button>
                     </div>
                 </div>
 
@@ -181,14 +138,12 @@
                                 <th class="p-3">No Container</th>
                                 <th class="p-3">Size</th>
                                 <th class="p-3">Consignee</th>
-                                <th class="p-3">Sopir</th>
+                                <th class="p-3">Driver</th>
                                 <th class="p-3">Status</th>
-                                <th class="p-3 text-right">Aksi</th>
+                                <th class="p-3 text-center">Aksi (Edit/Hapus)</th>
                             </tr>
                         </thead>
-                        <tbody id="strippingTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Rows -->
-                        </tbody>
+                        <tbody id="strippingTableBody" class="divide-y divide-slate-100 text-slate-700"></tbody>
                     </table>
                 </div>
             </div>
@@ -198,8 +153,8 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
                     <h2 class="text-base font-semibold text-slate-800">Daftar Stuffing (Muatan)</h2>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <input type="text" id="searchStuffing" oninput="renderStuffing()" placeholder="Cari muatan..." class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-64">
-                        <button onclick="exportCSV('stuffing')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap">Export</button>
+                        <input type="text" id="searchStuffing" oninput="renderStuffing()" placeholder="Cari kontainer/kapal..." class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-64">
+                        <button onclick="openModalForAdd('MUATAN')" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap">+ Tambah</button>
                     </div>
                 </div>
 
@@ -214,19 +169,17 @@
                                 <th class="p-3">Tujuan</th>
                                 <th class="p-3">Consignee</th>
                                 <th class="p-3">Status</th>
-                                <th class="p-3 text-right">Aksi</th>
+                                <th class="p-3 text-center">Aksi (Edit/Hapus)</th>
                             </tr>
                         </thead>
-                        <tbody id="stuffingTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Rows -->
-                        </tbody>
+                        <tbody id="stuffingTableBody" class="divide-y divide-slate-100 text-slate-700"></tbody>
                     </table>
                 </div>
             </div>
 
             <!-- TAB: VESSEL DEPARTURE -->
             <div id="tab-vessel" class="hidden space-y-4">
-                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex justify-between items-center">
+                <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
                     <h2 class="text-base font-semibold text-slate-800">Jadwal Keberangkatan Kapal Makassar 2026</h2>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-x-auto">
@@ -240,9 +193,7 @@
                                 <th class="p-3">Rute</th>
                             </tr>
                         </thead>
-                        <tbody id="vesselTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Rows -->
-                        </tbody>
+                        <tbody id="vesselTableBody" class="divide-y divide-slate-100 text-slate-700"></tbody>
                     </table>
                 </div>
             </div>
@@ -252,12 +203,13 @@
 
     <!-- Modal Form Add/Edit Container -->
     <div id="modalForm" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg mx-4 overflow-hidden transform transition-all">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg mx-4 overflow-hidden">
             <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
-                <h3 id="modalTitle" class="font-bold text-base">Tambah Kontainer</h3>
+                <h3 id="modalTitle" class="font-bold text-base">Form Data Kontainer</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="dataForm" onsubmit="saveData(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editCategory" value="">
                 <input type="hidden" id="editIndex" value="-1">
                 
                 <div class="grid grid-cols-2 gap-4">
@@ -284,7 +236,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Kapal</label>
-                        <input type="text" id="formKapal" placeholder="KM. MERATUS CIREBON" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        <input type="text" id="formKapal" required placeholder="KM. MERATUS CIREBON" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none">
                     </div>
                 </div>
 
@@ -311,7 +263,243 @@
         </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- Application Logic Script -->
     <script>
-        // Initial Dataset compiled from Makassar 2026 Operasional Depo Excel
-        let
+        const initialDb = {
+            stripping: [
+                { eta: '2026-06-03', kapal: 'KM. MERATUS CIREBON', no: 'LAKU 5799409', size: '20', consignee: 'PT. YAKULT INDONESIA', driver: 'BAHAR / L 9863 UW', status: 'KELUAR' },
+                { eta: '2026-06-03', kapal: 'KM. MERATUS CIREBON', no: 'LAKU 2642002', size: '40', consignee: 'CV. SUKSES BERSAMA', driver: 'GASSING / L 8236 UI', status: 'MASIH DI DEPO' },
+                { eta: '2026-06-04', kapal: 'KM. ORIENTAL GALAXY', no: 'LAKU 5798110', size: '20', consignee: 'LA MAIL', driver: 'SAIFUL / DD 8875 MA', status: 'KELUAR' },
+                { eta: '2026-06-05', kapal: 'KM. ORIENTAL GALAXY', no: 'LAKU 5799815', size: '20', consignee: 'CV. ABC', driver: 'SOPIR LUAR', status: 'KELUAR' }
+            ],
+            stuffing: [
+                { etd: '2026-06-04', kapal: 'KM. MERATUS CIREBON', no: 'LAKU 6242002', size: '40', destination: 'UPG - SUB', consignee: 'PT. MARINDO JAYA MAROS', status: 'KELUAR' },
+                { etd: '2026-06-03', kapal: 'KM. ORIENTAL GALAXY', no: 'LAKU 5798110', size: '20', destination: 'UPG - AMBON', consignee: 'CV. ABC', status: 'KELUAR' }
+            ],
+            vessel: [
+                { name: 'KM. MERATUS MALINO', voyage: 'MS263S', atd: '2026-05-15', eta: '2026-05-18', route: 'MAKASSAR - JAKARTA' },
+                { name: 'KM. MERATUS BATAM', voyage: 'MK416S', atd: '2026-05-15', eta: '2026-05-17', route: 'MAKASSAR - SURABAYA' },
+                { name: 'KM. TANTO EXPRESS', voyage: 'V.282', atd: '2026-05-16', eta: '2026-05-21', route: 'MAKASSAR - JAYAPURA' }
+            ]
+        };
+
+        // Load data from LocalStorage or use initial
+        let dbData = JSON.parse(localStorage.getItem('depo_db_2026')) || initialDb;
+
+        function saveToStorage() {
+            localStorage.setItem('depo_db_2026', JSON.stringify(dbData));
+        }
+
+        window.onload = function() {
+            renderStripping();
+            renderStuffing();
+            renderVessel();
+            initCharts();
+        };
+
+        function switchTab(tab) {
+            ['dashboard', 'stripping', 'stuffing', 'vessel'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 transition";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg text-sky-600 bg-sky-50 transition";
+        }
+
+        function renderStripping() {
+            const tbody = document.getElementById('strippingTableBody');
+            const search = document.getElementById('searchStripping').value.toLowerCase();
+            tbody.innerHTML = '';
+
+            dbData.stripping.forEach((item, idx) => {
+                if(item.no.toLowerCase().includes(search) || item.kapal.toLowerCase().includes(search)) {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-3">${item.eta}</td>
+                        <td class="p-3 font-medium">${item.kapal}</td>
+                        <td class="p-3 font-bold text-sky-700">${item.no}</td>
+                        <td class="p-3">${item.size} FT</td>
+                        <td class="p-3">${item.consignee || '-'}</td>
+                        <td class="p-3">${item.driver || '-'}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 text-xs font-semibold rounded-full ${item.status === 'KELUAR' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${item.status}</span></td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="editRow('stripping', ${idx})" class="text-sky-600 hover:text-sky-800 text-xs font-medium"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                            <button onclick="deleteRow('stripping', ${idx})" class="text-rose-500 hover:text-rose-700 text-xs font-medium"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        function renderStuffing() {
+            const tbody = document.getElementById('stuffingTableBody');
+            const search = document.getElementById('searchStuffing').value.toLowerCase();
+            tbody.innerHTML = '';
+
+            dbData.stuffing.forEach((item, idx) => {
+                if(item.no.toLowerCase().includes(search) || item.kapal.toLowerCase().includes(search)) {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-3">${item.etd}</td>
+                        <td class="p-3 font-medium">${item.kapal}</td>
+                        <td class="p-3 font-bold text-indigo-700">${item.no}</td>
+                        <td class="p-3">${item.size} FT</td>
+                        <td class="p-3">${item.destination || '-'}</td>
+                        <td class="p-3">${item.consignee || '-'}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">${item.status}</span></td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="editRow('stuffing', ${idx})" class="text-sky-600 hover:text-sky-800 text-xs font-medium"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                            <button onclick="deleteRow('stuffing', ${idx})" class="text-rose-500 hover:text-rose-700 text-xs font-medium"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        function renderVessel() {
+            const tbody = document.getElementById('vesselTableBody');
+            tbody.innerHTML = '';
+            dbData.vessel.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${item.name}</td>
+                    <td class="p-3 text-slate-600">${item.voyage}</td>
+                    <td class="p-3">${item.atd}</td>
+                    <td class="p-3">${item.eta}</td>
+                    <td class="p-3"><span class="px-2.5 py-1 text-xs font-medium bg-slate-100 rounded-md text-slate-700">${item.route}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openModalForAdd(defaultType = 'BONGKARAN') {
+            document.getElementById('editCategory').value = '';
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('modalTitle').innerText = 'Tambah Data Kontainer';
+            document.getElementById('formType').value = defaultType;
+            document.getElementById('formNo').value = '';
+            document.getElementById('formKapal').value = '';
+            document.getElementById('formConsignee').value = '';
+            document.getElementById('modalForm').classList.remove('hidden');
+        }
+
+        function editRow(category, index) {
+            const item = dbData[category][index];
+            document.getElementById('editCategory').value = category;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').innerText = 'Edit Data Kontainer';
+            document.getElementById('formType').value = category === 'stripping' ? 'BONGKARAN' : 'MUATAN';
+            document.getElementById('formNo').value = item.no;
+            document.getElementById('formSize').value = item.size;
+            document.getElementById('formKapal').value = item.kapal;
+            document.getElementById('formConsignee').value = item.consignee || '';
+            document.getElementById('formStatus').value = item.status || 'KELUAR';
+            document.getElementById('modalForm').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modalForm').classList.add('hidden');
+        }
+
+        function saveData(e) {
+            e.preventDefault();
+            const category = document.getElementById('editCategory').value;
+            const index = parseInt(document.getElementById('editIndex').value);
+            const type = document.getElementById('formType').value;
+            
+            const itemData = {
+                eta: '2026-06-10',
+                etd: '2026-06-10',
+                no: document.getElementById('formNo').value.toUpperCase(),
+                size: document.getElementById('formSize').value,
+                kapal: document.getElementById('formKapal').value,
+                consignee: document.getElementById('formConsignee').value,
+                status: document.getElementById('formStatus').value,
+                driver: 'DALAM',
+                destination: 'UPG - SUB'
+            };
+
+            if(index >= 0 && category) {
+                // Edit mode
+                dbData[category][index] = itemData;
+            } else {
+                // Add mode
+                if(type === 'BONGKARAN') {
+                    dbData.stripping.unshift(itemData);
+                } else {
+                    dbData.stuffing.unshift(itemData);
+                }
+            }
+
+            saveToStorage();
+            renderStripping();
+            renderStuffing();
+            closeModal();
+            alert('Data berhasil disimpan!');
+        }
+
+        function deleteRow(category, index) {
+            if(confirm('Apakah Anda yakin ingin menghapus kontainer ini?')) {
+                dbData[category].splice(index, 1);
+                saveToStorage();
+                renderStripping();
+                renderStuffing();
+            }
+        }
+
+        function quickSearch() {
+            const val = document.getElementById('quickSearchInput').value.trim().toLowerCase();
+            const resBox = document.getElementById('quickSearchResult');
+            if(!val) { resBox.classList.add('hidden'); return; }
+
+            const matchStrip = dbData.stripping.find(i => i.no.toLowerCase().includes(val));
+            const matchStuff = dbData.stuffing.find(i => i.no.toLowerCase().includes(val));
+
+            resBox.classList.remove('hidden');
+            if(matchStrip) {
+                resBox.innerHTML = `<p class="font-bold text-sky-600">${matchStrip.no}</p><p>Kategori: Bongkaran</p><p>Status: ${matchStrip.status}</p><p>Kapal: ${matchStrip.kapal}</p>`;
+            } else if(matchStuff) {
+                resBox.innerHTML = `<p class="font-bold text-indigo-600">${matchStuff.no}</p><p>Kategori: Muatan</p><p>Status: ${matchStuff.status}</p><p>Kapal: ${matchStuff.kapal}</p>`;
+            } else {
+                resBox.innerHTML = `<p class="text-rose-500 font-semibold">Kontainer tidak ditemukan.</p>`;
+            }
+        }
+
+        function initCharts() {
+            setTimeout(() => {
+                const ctxDriver = document.getElementById('driverChart');
+                if(ctxDriver) {
+                    new Chart(ctxDriver, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Bongkaran', 'Muatan'],
+                            datasets: [
+                                { label: 'Sopir Luar', data: [313, 107], backgroundColor: '#0284c7' },
+                                { label: 'Sopir Dalam', data: [214, 148], backgroundColor: '#10b981' }
+                            ]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+
+                const ctxSize = document.getElementById('sizeChart');
+                if(ctxSize) {
+                    new Chart(ctxSize, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Ready 20 FT', 'Ready 40 FT'],
+                            datasets: [{ data: [47, 45], backgroundColor: ['#f59e0b', '#8b5cf6'] }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
